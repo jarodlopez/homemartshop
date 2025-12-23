@@ -1,15 +1,19 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// En Vercel, usa Environment Variables para estos valores por seguridad
+// Configuración usando tus datos reales de 'homemartenic'.
+// La API Key se toma de las variables de entorno de Vercel (o archivo .env local).
 const firebaseConfig = {
-  apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
-  authDomain: "homemart-main.firebaseapp.com",
-  projectId: "homemart-main",
-  storageBucket: "homemart-main.appspot.com",
-  messagingSenderId: "56625838531",
-  appId: "1:56625838531:web:5837497424419c8f2d5924"
+  apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY, // Recuerda poner esto en Vercel
+  authDomain: "homemartenic.firebaseapp.com",
+  projectId: "homemartenic",
+  storageBucket: "homemartenic.firebasestorage.app",
+  messagingSenderId: "491359906424",
+  appId: "1:491359906424:web:77993044b19392e6731b8d",
+  measurementId: "G-N758YB17P9"
 };
 
 const app = initializeApp(firebaseConfig);
+
+// Exportamos la base de datos (db) porque la App la necesita para cargar productos
 export const db = getFirestore(app);
