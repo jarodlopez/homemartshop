@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aquí puedes agregar estilos globales personalizados si lo necesitas en el futuro.
+   Por ahora, con las directivas de Tailwind es suficiente para empezar.
+*/
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
