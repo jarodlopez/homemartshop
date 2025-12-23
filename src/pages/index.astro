@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.jsx';
+import CartDrawer from '../components/CartDrawer.jsx';
+import ProductApp from '../components/ProductApp.jsx';
+import { db } from '../lib/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+
+// 1. Fetch de datos en el servidor (SSR)
+// Esto asegura que Google indexe tus productos y la carga inicial sea rápida
+let products = [];
+let categories = [];
+
+try {
+  const querySnapshot = await getDocs(collection(db, "products"));
+  products = querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+  
+  // Extraer categorías únicas
+  categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+} catch (error) {
+  console.error("Error fetching products:", error);
+  // Fallback data si la DB falla o está vacía inicialmente
+  products = [
+    { id: '1', name: 'Demo Taladro', price: 1500, category: 'Herramientas', image: 'https://placehold.co/600x400' }
+  ];
+}
+---
+
+<Layout title="HomeMart">
+  <!-- Navbar es una isla 'client:load' para manejar el estado del carrito inmediatamente -->
+  <Navbar client:load categories={categories} />
+  
+  <!-- Drawer del carrito, siempre listo pero oculto -->
+  <CartDrawer client:load />
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Hero Section (Estático, renderizado por Astro para máxima velocidad) -->
+    <div class="relative rounded-3xl overflow-hidden bg-gray-900 text-white mb-16 py-20 px-8 text-center">
+      <div class="relative z-10">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6">Construye tu Futuro</h1>
+        <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">Catálogo profesional con precios actualizados y entrega directa.</p>
+      </div>
+    </div>
+
+    <!-- La App Principal de Productos -->
+    <!-- 'client:visible' significa que solo carga el JS cuando el usuario ve esta sección -->
+    <ProductApp client:visible initialProducts={products} initialCategories={categories} />
+  </main>
+  
+  <footer class="bg-gray-900 text-white py-12 mt-20 text-center">
+    <p>© 2026 HomeMart Nicaragua.</p>
+  </footer>
+</Layout>
